@@ -1,0 +1,102 @@
+* {
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* outline: solid red 1px; */
+
+}
+
+body {
+    background-color: rgb(35, 35, 35);
+}
+
+#calcBody {
+    background-color: beige;
+    width: 300px;
+    height: 550px;
+
+    margin: 20px auto;
+    padding: 0 10px 10px;
+
+    border-radius: 10px;
+    border-right: solid rgb(161, 104, 0) 5px;
+    border-bottom: solid rgb(161, 104, 0) 5px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#calcBody * {
+    border-radius: 5px;
+}
+
+#calcHeader {
+    font-size: 20px;
+    font-style: italic;
+    color: maroon;
+    font-weight: bold;
+
+    padding-top: 5px;
+}
+
+.lineBreak {
+    height: 3px;
+    background-color: maroon;
+    margin: 5px 0;
+}
+
+#display {
+    background-color: lightgray;
+    text-align: right;
+    padding: 5px;
+    font-size: 40px;
+    border: solid gray 3px;
+}
+
+#keys {
+    display: flex;
+    flex-direction: column;
+
+    flex-grow: 1;
+    gap: 5px;
+    
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+
+    flex-grow: 1;
+    gap: 5px;
+}
+
+.btn {
+    /* flex-grow: 1; */
+    padding: 0;
+    margin: 0;
+
+    width: 83px;
+
+}
+
+#topRow {
+    justify-content: space-between;
+}
+
+#bottomRow {
+    flex-grow: 2;
+    gap: 0;
+}
+
+#operators {
+    display: flex;
+    flex-direction: column;
+
+    flex-grow: 2;
+    gap: 5px;
+
+}
+
+
+#equalsBtn {
+    flex-grow: 1;
+}
