@@ -1,12 +1,17 @@
 * {
     box-sizing: border-box;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 0;
+    padding: 0;
+
+    border-radius: 5px;
+
     /* outline: solid red 1px; */
 
 }
 
 body {
-    background-color: rgb(35, 35, 35);
+    background-color: rgb(0, 58, 0);
 }
 
 #calcBody {
@@ -14,34 +19,34 @@ body {
     width: 300px;
     height: 550px;
 
-    margin: 20px auto;
-    padding: 0 10px 10px;
-
     border-radius: 10px;
     border-right: solid rgb(161, 104, 0) 5px;
-    border-bottom: solid rgb(161, 104, 0) 5px;
+    box-shadow: 5px 5px 5px black;
+
+
+    margin: 20px auto;
+    padding: 20px;
+
 
     display: flex;
     flex-direction: column;
 }
-
-#calcBody * {
-    border-radius: 5px;
-}
-
 #calcHeader {
     font-size: 20px;
     font-style: italic;
     color: maroon;
     font-weight: bold;
 
-    padding-top: 5px;
+    margin: 0 -5px 5px;
+
+    /* padding-top: 5px; */
 }
 
 .lineBreak {
     height: 3px;
     background-color: maroon;
-    margin: 5px 0;
+
+    margin: 0 -5px 5px;
 }
 
 #display {
@@ -50,53 +55,56 @@ body {
     padding: 5px;
     font-size: 40px;
     border: solid gray 3px;
+    box-shadow: inset 2px 2px 2px black;
+
+    margin-bottom: 5px;
 }
 
 #keys {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 
+  flex-grow: 1;
+}
+
+#keys * {
     flex-grow: 1;
+    flex-basis: 0;
     gap: 5px;
-    
 }
 
 .row {
     display: flex;
-    justify-content: center;
 
-    flex-grow: 1;
-    gap: 5px;
-}
-
-.btn {
-    /* flex-grow: 1; */
-    padding: 0;
-    margin: 0;
-
-    width: 83px;
-
-}
-
-#topRow {
-    justify-content: space-between;
 }
 
 #bottomRow {
     flex-grow: 2;
-    gap: 0;
 }
 
 #operators {
     display: flex;
     flex-direction: column;
 
-    flex-grow: 2;
-    gap: 5px;
+    /* why + .1 ???? */
+    flex-grow: 2.1; 
+}
+
+button {
+    color: maroon;
+    font-weight: 900;
+    font-size: large;
+    background-color: white;
+
+    border: solid black 1px;
+    box-shadow: 2px 2px 2px black;
+    cursor:pointer;    
 
 }
 
-
-#equalsBtn {
-    flex-grow: 1;
+#bottomRow button {
+    color: white;
+    background-color: maroon;
 }
+
