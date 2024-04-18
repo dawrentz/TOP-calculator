@@ -37,7 +37,7 @@ body {
     color: maroon;
     font-weight: bold;
 
-    margin: 0 -5px 5px;
+    margin: 0 -5px 10px;
 
     /* padding-top: 5px; */
 }
@@ -66,6 +66,7 @@ body {
   gap: 5px;
 
   flex-grow: 1;
+  margin-top: 10px;
 }
 
 #keys * {
@@ -79,7 +80,12 @@ body {
 
 }
 
+#topRow {
+    margin-bottom: 10px;
+}
+
 #bottomRow {
+    margin-top: 10px;
     flex-grow: 2;
 }
 
@@ -103,7 +109,9 @@ button {
 
 }
 
-#bottomRow button {
+#bottomRow button,
+#allClearBtn, 
+#powerBtn {
     color: white;
     background-color: maroon;
 }

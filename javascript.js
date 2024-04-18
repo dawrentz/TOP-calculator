@@ -1,4 +1,10 @@
 // authenticate as admin to divide by zero
+// 5+5 = 55 for input
+// power button just changes text color to background, or opacity
+
+
+
+
 
 //assign buttons
 // const acBtn = document.querySelector("#acBtn");
@@ -21,29 +27,47 @@
 // const Btn = document.querySelector("#Btn");
 // const Btn = document.querySelector("#Btn");
 
-// collect value buttons
-const allBtns = document.querySelectorAll(".valueBtn");
-// console.log(allBtns);
 
-// assign event listener to value buttons
+// declare display and displayValue
+let display = document.querySelector("#display");
+let currentDisplayValue = display.textContent;
+// console.log(displayValue);
+
+// add update displayValue function
+function updateDV() {
+    currentDisplayValue = display.textContent;  
+}
+// see currentDisplayValue click anywhere TESTER
+document.querySelector("body").addEventListener("click", e => console.log(currentDisplayValue));
+
+
+
+// change display with button click, and extract displayValue
+const allBtns = document.querySelectorAll(".valueBtn");
 allBtns.forEach(button => {
-    button.addEventListener("click", e => console.log(button.textContent))
+    button.addEventListener("click", function() {
+        if(currentDisplayValue == 0) {
+            display.textContent = button.textContent;
+            updateDV();
+        } else if (currentDisplayValue.length < 9) {
+                display.textContent = currentDisplayValue + button.textContent;
+                updateDV();
+        }
+    });
 });
 
+// add backspace mechanic
+const backSpaceBtn = document.querySelector("#backSpaceBtn");
+backSpaceBtn.addEventListener("click", function() {
+    if(currentDisplayValue == 0) {
+        // do nothing
+    } else if(currentDisplayValue.length == 1) {
+        display.textContent = 0;
+        updateDV();    
+    } else {
+        display.textContent = display.textContent.slice(0, -1);
+        
+        updateDV();  
+    }
+});
 
-
-
-
-
-
-
-
-
-// const test = document.querySelector("#powerBtn");
-// test.addEventListener("click", e => console.log("test"));
-// console.log(test);
-
-
-
-
-// functions
