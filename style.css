@@ -51,6 +51,8 @@ body {
     font-size: 38px;
     border: solid gray 3px;
     box-shadow: inset 2px 2px 2px black;
+    color: black;
+    height: 62px;
 
     margin-bottom: 5px;
 }
