@@ -1,10 +1,8 @@
-//power button just changes text color to background, or opacity
-//want to continue last op when continue press equals
+//put functions seperate then asssing in eventlisteners, may help with keyboard
 
 //declare display and displayValue
 const display = document.querySelector("#display");
 let currentDisplayVal = display.textContent;
-
 
 //variables
 let firstNum;
@@ -15,19 +13,28 @@ let powerOn = true;
 let prevSecondNum;
 let prevOperator;
 
-//functions
-//return whole num length to sub from 10 or 9 and use toFixed
+//functions==============
+
+//update display
+function updateDisplay(value) {
+    display.textContent = value;
+}
+
+//round if too long. Return only whole num length then sub from 10 or 9 and use toFixed
+//fix decimal assumption!!!!!!!!!!!!!!!!!!!!
 function round(num) {
     let numString = num.toString();
-    if (numString.length > 9 && numString[0] !== "-") {
-        let wholeNumLength = Math.round(num).toString().length;
-        //add one for decimal
-        return num.toFixed(9 - wholeNumLength -1);
-    } else if (numString.length > 10 && numString[0] == "-") {
-        let wholeNumLength = Math.round(num).toString().length;
-        //add one for decimal
-        return num.toFixed(10 - wholeNumLength -1);
-    } else return num;
+    //negative with decimal (add 1 to length for decimal)
+    if (numString[0] == "-" && numString.length > 10) {
+        return num.toExponential(4);
+    }
+
+
+
+
+    //need to force to scientific notation
+    //need trigger for <1 and whole number length over 9/10
+
 }
 
 function equals(num1, num2, op) {
@@ -35,34 +42,27 @@ function equals(num1, num2, op) {
     if (op == "+") temp = +num1 + +num2;
     if (op == "-") temp = +num1 - +num2;
     if (op == "x") temp = +num1 * +num2;
-    if (op == "÷") temp = +num1 / +num2;
-    // if (temp == "NaN") temp = "3rr0r";
-    if (op == "÷" && secondNum == 0) temp = "Go to jail";
+    if (op == "÷" && secondNum == 0) {
+        temp = "Go to jail";
+    } else if (op == "÷") temp = +num1 / +num2;
+
     prevSecondNum = secondNum;
     prevOperator = operator; 
-    console.log(temp);
 
-
-    if (
-        // temp !== "3rr0r" && 
-        temp !== "Go to jail" //&& 
-        // temp !== "NaN"
-    ) {
-        display.textContent = round(temp);
-    } else display.textContent = temp;
+    if (temp !== "Go to jail") {
+        updateDisplay(round(temp));
+    } else updateDisplay(temp);
 
     firstNum = display.textContent;
     secondNum = undefined;
     operator = undefined;
     firstClick = true;
 
-    if (temp = "Go to jail") {        
+    if (temp == "Go to jail") {        
         firstNum = undefined;
         prevSecondNum = undefined;
         prevOperator = undefined; 
     }
-
-    //needs rounding
 }
 
 //capture current display's value on every click
@@ -90,18 +90,18 @@ allValueBtns.forEach(valueBtn => {
         //after overwrite
         if (!firstClick) {
             if (currentDisplayVal == "0") {
-                display.textContent = valueBtn.textContent;
+                updateDisplay(valueBtn.textContent);
             } else if (currentDisplayVal.length < 9 && currentDisplayVal[0] != "-") { 
-                    display.textContent = currentDisplayVal + valueBtn.textContent;
+                updateDisplay(currentDisplayVal + valueBtn.textContent);
             } else if (currentDisplayVal.length < 10 && currentDisplayVal[0] == "-") { 
-                display.textContent = currentDisplayVal + valueBtn.textContent;
+                updateDisplay(currentDisplayVal + valueBtn.textContent);
             }
             console.log("not first!!!"); //test
         }
 
         //overwrite
         if (firstClick) {
-            display.textContent = valueBtn.textContent;
+            updateDisplay(valueBtn.textContent);
             firstClick = false;
             console.log("first!!!"); //test
         }
@@ -115,13 +115,13 @@ backSpaceBtn.addEventListener("click", function() {
     if (currentDisplayVal == "0") {
         //do nothing
     } else if (currentDisplayVal.length == 1) {
-        display.textContent = "0";
+        updateDisplay("0");
     } else if (currentDisplayVal[0] == "-" && currentDisplayVal.length == 2) {
-        display.textContent = "0";
+        updateDisplay("0");
     } else if (currentDisplayVal == "-0.") {
-        display.textContent = "0";
+        updateDisplay("0");
     } else {
-        display.textContent = display.textContent.slice(0, -1);
+        updateDisplay(display.textContent.slice(0, -1));
     }
     firstClick = false;
 });
@@ -130,12 +130,11 @@ backSpaceBtn.addEventListener("click", function() {
 const negativeBtn = document.querySelector("#negativeBtn");
 negativeBtn.addEventListener("click", function() {
     
-    if (currentDisplayVal == "0" || currentDisplayVal == "NaN" ||
-    currentDisplayVal == "3rr0r" || currentDisplayVal == "Go to jail") {
+    if (currentDisplayVal == "Go to jail" || currentDisplayVal == 0) {
         //do nothing
     } else if (currentDisplayVal[0] !== "-") {
-        display.textContent = "-" + currentDisplayVal;
-    } else (display.textContent = display.textContent.slice(1))
+        updateDisplay("-" + currentDisplayVal);
+    } else (updateDisplay(display.textContent.slice(1)))
     firstClick = false;
 
 });
@@ -147,7 +146,7 @@ decimalBtn.addEventListener("click", function() {
     if (currentDisplayVal.includes(".")) {
         //do nothing
     } else if (currentDisplayVal.length < 9) {
-        display.textContent = currentDisplayVal + ".";
+        updateDisplay(currentDisplayVal + ".");
     }
     firstClick = false;
 });
@@ -157,7 +156,9 @@ const allOperatorBtns = document.querySelectorAll("#operators button");
 allOperatorBtns.forEach(operatorBtn => {
     
     operatorBtn.addEventListener("click", function() {
-        if (operator == undefined) {
+        if (display.textContent == "Go to jail") {
+            //do nothing
+        } else if (operator == undefined) {
             firstNum = currentDisplayVal;
             operator = operatorBtn.textContent;
             firstClick = true;
@@ -169,9 +170,6 @@ allOperatorBtns.forEach(operatorBtn => {
             operator = operatorBtn.textContent;
             firstClick = true;
         } 
-       
-        //if both numbers defined, run equals, and set firstNum to second and second to undef (and operator to that buttonOPerator)
-
     });
 })
 
@@ -190,14 +188,11 @@ equalsBtn.addEventListener("click", function() {
         }
 });
 
-//add a keep old values button, run with those if not currnet defined 
-
-
 //add all clear
 const allClearBtn = document.querySelector("#allClearBtn");
 allClearBtn.addEventListener("click", function() {
     
-    display.textContent = 0;
+    updateDisplay(0);
     firstNum = undefined;
     secondNum = undefined;
     operator = undefined;
@@ -210,43 +205,36 @@ allClearBtn.addEventListener("click", function() {
 const powerBtn = document.querySelector("#powerBtn");
 
 function noInput() {
-    display.textContent = "";
+    updateDisplay("");
 }
 
 powerBtn.addEventListener("click", function() {
     if (powerOn) {
         powerOn = false;
-        display.textContent = "";
+        updateDisplay("");
 
         document.querySelector("#keys").addEventListener("click", noInput);
 
     } else if (!powerOn) {
         document.querySelector("#keys").removeEventListener("click", noInput);
         powerOn = true;
-        display.textContent = 0;
+        updateDisplay(0);
         firstNum = undefined;
         secondNum = undefined;
         operator = undefined;
         firstClick = true;
+        prevSecondNum = undefined;
+        prevOperator = undefined;
     }
 });
 
+document.addEventListener("keydown", (event) => {
+    console.log(event.key);
 
+});
 
-// let x = -123456.654321;
-// display.textContent = round(x);
-// console.log(round(x));
+// let x = 143242432;
+// x = 
+// updateDisplay(x.toExponential(3));
 
-// console.log("length: " + x.toString().length);
-// console.log(round(x));
-
-// let x = "Go to jail";
-// let y = 4;
-// let z = +x + +y;
-
-// console.log(z);
-// console.log(typeof +x);
-// console.log(typeof +y);
-// console.log(typeof z);
-
-
+// console.log(1.432e+8);
