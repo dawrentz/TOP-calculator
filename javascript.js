@@ -121,8 +121,8 @@ document.querySelector("#keys").addEventListener("click", e => {
 //===========================================================================//
 //change display with button click
 const allValueBtns = document.querySelectorAll(".valueBtn");
-allValueBtns.forEach(valueBtn => {
-    
+
+allValueBtns.forEach(valueBtn => {    
     valueBtn.addEventListener("click", function() {
         //after overwrite
         if (!firstClick) {
@@ -135,7 +135,7 @@ allValueBtns.forEach(valueBtn => {
             }
         }
 
-        //overwrite (only needs to over write in certain scenarios)
+        //overwrite (only needs to overwrite in certain scenarios)
         if (firstClick) {
             updateDisplay(valueBtn.textContent);
             firstClick = false;
@@ -146,41 +146,55 @@ allValueBtns.forEach(valueBtn => {
 //===========================================================================//
 //add backspace mechanic
 const backSpaceBtn = document.querySelector("#backSpaceBtn");
-backSpaceBtn.addEventListener("click", function() {
 
+backSpaceBtn.addEventListener("click", function() {
     //lots of unrelated scenarios to respond to    
-    if (currentDisplayVal == "0") {
-        return; // do nothing
-    } else if (currentDisplayVal.length == 1) {
+    //scenario 0: special case, positive single digit interger, sci notation, or zero
+    if (display.textContent == "Go to jail" || 
+        currentDisplayVal.length == 1 ||
+        currentDisplayVal.includes("e")) {
         updateDisplay("0");
-    } else if (currentDisplayVal[0] == "-" && currentDisplayVal.length == 2) {
+    } 
+    //scenario 1: negative single digit interger. Avoids having only "-" in the display. 
+    else if (currentDisplayVal[0] == "-" && currentDisplayVal.length == 2) {
         updateDisplay("0");
-    } else if (currentDisplayVal == "-0.") {
+    } 
+    //scenario 2: Avoids having only "-0" in the display.
+    else if (currentDisplayVal == "-0.") {
         updateDisplay("0");
-    } else {
+    } 
+    //scenario 3: everything else gets the end chopped off
+    else {
         updateDisplay(display.textContent.slice(0, -1));
     }
+
     firstClick = false; //remove overwrite ability after user commits to change
 });
 
 //===========================================================================//
 //add negation mechanic
 const negativeBtn = document.querySelector("#negativeBtn");
-negativeBtn.addEventListener("click", function() {
-    
-    if (currentDisplayVal == "Go to jail" || currentDisplayVal == 0) {
+
+negativeBtn.addEventListener("click", function() {    
+    //scenario 0: special case or zero. Avoids "-0" in display
+    if (display.textContent == "Go to jail" || currentDisplayVal == 0) {
         return; // do nothing
-    } else if (currentDisplayVal[0] !== "-") {
+    } 
+    //scenario 1: number is not negative. Append "-" to front
+    else if (currentDisplayVal[0] !== "-") {
         updateDisplay("-" + currentDisplayVal);
-    } else (updateDisplay(display.textContent.slice(1)))
+    } 
+    //scenario 2: number is negative. Chop off first char
+    else (updateDisplay(display.textContent.slice(1)))
+    
     firstClick = false; //remove overwrite ability after user commits to change
 });
 
 //===========================================================================//
 //add decimal ability
 const decimalBtn = document.querySelector("#decimalBtn");
-decimalBtn.addEventListener("click", function() {
-    
+
+decimalBtn.addEventListener("click", function() {    
     if (currentDisplayVal.includes(".")) {
         return; // do nothing
     } 
@@ -188,14 +202,15 @@ decimalBtn.addEventListener("click", function() {
     else if (currentDisplayVal.length < 9) {
         updateDisplay(currentDisplayVal + ".");
     }
+
     firstClick = false; //remove overwrite ability after user commits to change
 });
 
 //===========================================================================//
 //add operators
 const allOperatorBtns = document.querySelectorAll("#operators button");
-allOperatorBtns.forEach(operatorBtn => {
-    
+
+allOperatorBtns.forEach(operatorBtn => {    
     //extracts textContent for equals() to look at
     operatorBtn.addEventListener("click", function() {
         //scenario 0: special case
@@ -226,6 +241,7 @@ allOperatorBtns.forEach(operatorBtn => {
 //===========================================================================//
 //create execute (equals) mechanic
 const equalsBtn = document.querySelector("#equalsBtn");
+
 equalsBtn.addEventListener("click", function() {
     //scenario 0: bug fix
     if (firstNum == undefined) {
