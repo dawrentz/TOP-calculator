@@ -13,7 +13,7 @@ let powerOn = true;
 let prevSecondNum;
 let prevOperator;
 
-//functions==============
+//functions==========================
 
 //update display
 function updateDisplay(value) {
@@ -21,20 +21,42 @@ function updateDisplay(value) {
 }
 
 //round if too long. Return only whole num length then sub from 10 or 9 and use toFixed
-//fix decimal assumption!!!!!!!!!!!!!!!!!!!!
 function round(num) {
-    let numString = num.toString();
-    //negative with decimal (add 1 to length for decimal)
-    if (numString[0] == "-" && numString.length > 10) {
-        return num.toExponential(4);
+    //bug fix for when num is in sci notation
+    if (num.toString().includes("e")) {
+        return num.toExponential(2);
     }
 
+    //declarations
+    let absNum = Math.abs(num); //use abs value to save on redunancy on negative numbers
 
+    function countChar(value) {
+        return value.toString().length;
+    }
 
+    //logic
+    if (countChar(absNum) > 9) { 
+        let leftAndRight = absNum.toString().split(".");
+        let [wholeNum, decNum] = leftAndRight;     
 
-    //need to force to scientific notation
-    //need trigger for <1 and whole number length over 9/10
+        //big number only needs sci notation
+        if (countChar(wholeNum) > 9) {
+            return num.toExponential(2);
+        }
+        //middle numbers need all whole numbers and rounded decimals to a variable length
+        else if (decNum > 0.0000001) {
+            let roundTo = 9 - countChar(wholeNum) - 1; //gets max decimal length. -1 for decimal point itself
+            
+            return num.toFixed(roundTo);
+        }
 
+        //small number only needs sci notation
+        if (absNum < 0.0000001) {
+            return num.toExponential(2);
+        }
+    } 
+    //if absNum length not over 9, just return num
+    else return num;
 }
 
 function equals(num1, num2, op) {
@@ -82,7 +104,7 @@ document.querySelector("#keys").addEventListener("click", e => {
     console.log("typeof currentDisplayVal: " + typeof currentDisplayVal);
 });
 
-//change display with button click, and extract displayValue
+//change display with button click, and extract displayValue==================
 const allValueBtns = document.querySelectorAll(".valueBtn");
 allValueBtns.forEach(valueBtn => {
     
@@ -108,7 +130,7 @@ allValueBtns.forEach(valueBtn => {
     });
 });
 
-//add backspace mechanic
+//add backspace mechanic===========================
 const backSpaceBtn = document.querySelector("#backSpaceBtn");
 backSpaceBtn.addEventListener("click", function() {
     
@@ -126,7 +148,7 @@ backSpaceBtn.addEventListener("click", function() {
     firstClick = false;
 });
 
-//add negation mechanic
+//add negation mechanic========================
 const negativeBtn = document.querySelector("#negativeBtn");
 negativeBtn.addEventListener("click", function() {
     
@@ -139,7 +161,7 @@ negativeBtn.addEventListener("click", function() {
 
 });
 
-//add decimal ability
+//add decimal ability======================
 const decimalBtn = document.querySelector("#decimalBtn");
 decimalBtn.addEventListener("click", function() {
     
@@ -151,7 +173,7 @@ decimalBtn.addEventListener("click", function() {
     firstClick = false;
 });
 
-//add operators
+//add operators=======================================
 const allOperatorBtns = document.querySelectorAll("#operators button");
 allOperatorBtns.forEach(operatorBtn => {
     
@@ -173,10 +195,14 @@ allOperatorBtns.forEach(operatorBtn => {
     });
 })
 
-//create excute (equals) mechanic
+//create excute (equals) mechanic=============================
 const equalsBtn = document.querySelector("#equalsBtn");
 equalsBtn.addEventListener("click", function() {
-    if (secondNum == undefined && operator == undefined &&
+    if (firstNum == undefined) {
+        // do nothing
+        return;
+    }
+    else if (secondNum == undefined && operator == undefined &&
         prevSecondNum !== undefined && prevOperator !== undefined &&
         firstClick) {
             secondNum = prevSecondNum;
@@ -188,7 +214,7 @@ equalsBtn.addEventListener("click", function() {
         }
 });
 
-//add all clear
+//add all clear=================================
 const allClearBtn = document.querySelector("#allClearBtn");
 allClearBtn.addEventListener("click", function() {
     
@@ -232,9 +258,3 @@ document.addEventListener("keydown", (event) => {
     console.log(event.key);
 
 });
-
-// let x = 143242432;
-// x = 
-// updateDisplay(x.toExponential(3));
-
-// console.log(1.432e+8);
