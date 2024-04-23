@@ -6,6 +6,7 @@
 
     border-radius: 5px;
 
+    /* debugging tool */
     /* outline: solid red 1px; */
 }
 
@@ -110,4 +111,3 @@ button {
     color: white;
     background-color: maroon;
 }
-
