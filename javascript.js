@@ -1,9 +1,8 @@
-//declare display and displayValue
-const display = document.querySelector("#display");
-let currentDisplayVal = display.textContent;
+//notes
+//add style for buton press? smaller and no shadow = simulated physical press
 
 //===========================================================================//
-//variables
+//declarations
 //===========================================================================//
 let firstNum;
 let secondNum;
@@ -12,6 +11,9 @@ let overwriteable = true;
 let powerOn = true;
 let prevSecondNum;
 let prevOperator;
+
+const display = document.querySelector("#display");
+let currentDisplayVal = display.textContent;
 
 //===========================================================================//
 //functions
@@ -23,15 +25,16 @@ function updateDisplay(value) {
 }
 
 //===========================================================================//
-//round if too long for display
-function round(num) {
+//round if too long for display and clean the result
+function cleanAndRound(num) {
     //bug fix for when num is in sci notation
     if (num.toString().includes("e")) {
         return num.toExponential(2);
     }
 
     //declarations
-    let absNum = Math.abs(num); //use abs value to save on redunancy on negative numbers
+    let absNum = Math.abs(num); //use abs value to save redunancy on negative numbers
+    let result;
 
     function countChar(value) {
         return value.toString().length;
@@ -39,45 +42,54 @@ function round(num) {
 
     //logic
     if (countChar(absNum) > 9) { 
-        let leftAndRight = absNum.toString().split(".");
-        let [wholeNum, decNum] = leftAndRight;     
+        let [wholeNum, decNum] = absNum.toString().split(".");
 
-        //big number only needs sci notation
+        //scenario 0: big number only needs sci notation
         if (countChar(wholeNum) > 9) {
-            return num.toExponential(2);
+            result = num.toExponential(2); //could make this variable by splitting sci notation on "e" and using array[1] to see how big it is
         }
-        else if (decNum > 0.0000001 && wholeNum != 0 && decNum != 0) {
-            return Math.round(num);
-        }
-        //middle numbers need all whole numbers and rounded decimals to a variable length
+        //scenario 1: middle numbers need all whole numbers and rounded decimals to a variable length
         else if (decNum > 0.0000001) {
-            let roundTo = 9 - countChar(wholeNum) - 1; //gets max decimal length. -1 for decimal point itself
+            let roundTo = 9 - countChar(wholeNum) - 1; //gets max decimal length. "-1" is for decimal point itself
             
-            return num.toFixed(roundTo);
+            result = num.toFixed(roundTo);
         }
-
-        //small number only needs sci notation
+        //scenario 2: small number only needs sci notation
         if (absNum < 0.0000001) {
-            return num.toExponential(2);
+            result = num.toExponential(2);
         }
     } 
     //if absNum length not over 9, just return num
-    else return num;
+    else result = num;
+
+    //clean up 
+    //takes off trailing zeros after decimal (non-sci notation)
+    result = result.toString();
+    while (result.charAt(result.length - 1) == 0 &&
+        result.includes(".") && !result.includes("e")) {
+            result = result.slice(0, -1);
+    }
+
+    //removes lonely decimal point
+    if (result.charAt(result.length - 1) == ".") {
+        result = result.slice(0, -1);
+    }
+
+    return result;
 }
 
 //===========================================================================//
 function equals(num1, num2, op) {
     let temp;
     //bug fix from keyboard implementation
-    if (op == "÷") { op = "/";}
-    if (op == "x") { op = "*";}
-
+    if (op == "÷") {op = "/";}
+    if (op == "x") {op = "*";}
 
     //operators and special case
     if (op == "+") temp = +num1 + +num2;
     if (op == "-") temp = +num1 - +num2;
     if (op == "*") temp = +num1 * +num2;
-    if (op == "/" && secondNum == 0) {
+    if (op == "/" && +secondNum == 0) {
         temp = "Go to jail";
     } else if (op == "/") temp = +num1 / +num2;
 
@@ -85,12 +97,12 @@ function equals(num1, num2, op) {
     prevSecondNum = secondNum;
     prevOperator = operator; 
 
-    //if not the special case, run all answers through round() and update display with answer
+    //if not the special case, round and clean. Then update display with answer
     if (temp !== "Go to jail") {
-        updateDisplay(round(temp));
+        updateDisplay(cleanAndRound(temp));
     } else updateDisplay(temp);
 
-    //update/reset values
+    // update/reset values
     firstNum = display.textContent;
     secondNum = undefined;
     operator = undefined;
@@ -130,7 +142,6 @@ function updater() {
 
 document.querySelector("#keys").addEventListener("click", updater);
 
-
 //===========================================================================//
 const allValueBtns = document.querySelectorAll(".valueBtn");
 
@@ -155,7 +166,7 @@ function valueToDisplay(e) {
         }
     }
 
-    //only needs to overwrite in certain scenarios
+    //only needs to overwrite display in certain scenarios
     if (overwriteable) {
         updateDisplay(value);
         overwriteable = false;
@@ -183,6 +194,7 @@ function backspacer() {
         updateDisplay("0");
     } 
     //scenario 2: Avoids having only "-0" in the display.
+    //could include 1 and 2 in 0, but getting crowded.
     else if (currentDisplayVal == "-0.") {
         updateDisplay("0");
     } 
@@ -308,6 +320,7 @@ equalsBtn.addEventListener("click", equator);
 const allClearBtn = document.querySelector("#allClearBtn");
 
 //resets everything, save powerOn
+//no keyboard support
 function allClear() {
     updateDisplay(0);
     firstNum = undefined;
@@ -328,6 +341,7 @@ function noInput() {
     updateDisplay("");
 }
 
+//no keyboard support
 powerBtn.addEventListener("click", function() {
     if (powerOn) {
         powerOn = false;
