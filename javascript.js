@@ -130,14 +130,14 @@ function updater() {
         else {currentDisplayVal = display.textContent;}
     
         // tester: returns internal values on each event
-        console.log("new================");
-        console.log("currentDisplayVal: " + currentDisplayVal);
-        console.log("firstNum: " + firstNum);
-        console.log("secondNum: " + secondNum);
-        console.log("operator: " + operator);
-        console.log("prevSecondNum: " + prevSecondNum);
-        console.log("prevOperator: " + prevOperator);
-        console.log("typeof currentDisplayVal: " + typeof currentDisplayVal);
+        // console.log("new================");
+        // console.log("currentDisplayVal: " + currentDisplayVal);
+        // console.log("firstNum: " + firstNum);
+        // console.log("secondNum: " + secondNum);
+        // console.log("operator: " + operator);
+        // console.log("prevSecondNum: " + prevSecondNum);
+        // console.log("prevOperator: " + prevOperator);
+        // console.log("typeof currentDisplayVal: " + typeof currentDisplayVal);
 }
 
 document.querySelector("#keys").addEventListener("click", updater);
